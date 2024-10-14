@@ -1,4 +1,4 @@
-# myactuator_lib
+# myactuator
 
 package for creating or parsing messages compatable with [MYACTUATOR RMD-X](https://www.myactuator.com/downloads-x-series) motors
 
