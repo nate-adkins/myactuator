@@ -1,4 +1,4 @@
-from msgs import SpeedClosedLoopControlMsg, MotorShutdownMsg, ReadMotorStatus1Msg,ReadMotorStatus2Msg, ReadMotorStatus3Msg
+from myactuator_lib.msgs import SpeedClosedLoopControlMsg, MotorShutdownMsg, ReadMotorStatus1Msg,ReadMotorStatus2Msg, ReadMotorStatus3Msg
 import serial, time, can, csv
 
 speed_msg_mkr = SpeedClosedLoopControlMsg()
@@ -10,14 +10,14 @@ status_mkr = ReadMotorStatus3Msg()
 status_msg = status_mkr.make_uart_msg(0x141)
 
 port = serial.Serial(
-    port        = "/dev/ttyUSB0",
+    port        = "COM5",
     baudrate    = 115200,
     timeout     = 2
 )
 
 responses = []
 for n in range(200):
-    port.write(status_msg)
+    port.write(ReadMotorStatus3Msg.make_uart_msg(0x141))
     time.sleep(0.1)
     responses.append(bytearray(port.read(13)))
 
@@ -28,7 +28,7 @@ for response in responses:
         arbitration_id= 1 + 0x140,
         data = response[3:10],
     )
-    id, val = status_mkr.parse_can_msg(new_can_msg)
+    id, val = ReadMotorStatus3Msg.parse_can_msg(new_can_msg)
     print(id, val)
 
 filename = 'myactuator_lib/status_3_output.csv'
