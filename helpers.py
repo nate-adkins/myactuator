@@ -1,5 +1,7 @@
 import can
 
+BYTE_ORDER = 'little'
+
 class _CanMsgParam():
     def __init__(self, name, start_index, byte_length, transform_func):
         self.name: str = name
@@ -25,15 +27,23 @@ class _BaseMsg:
         new_data = [0] * 8
         for i, param in enumerate(self.sent_parameters):
             param_val: int = param.transform_func(args[i])
-            new_bytes = list(param_val.to_bytes(param.byte_length,'little'))
+            new_bytes = list(param_val.to_bytes(param.byte_length,BYTE_ORDER))
             new_data[param.start_index:param.start_index + param.byte_length] = new_bytes
 
         new_data[0] = self.cmd_byte
         new_msg.data = new_data
         return new_msg
 
-    def parse_msg(self, byte_array) -> dict[str, int]:
-        pass
+    def parse_msg(self, recv_msg: can.Message) -> tuple[int, dict[str, int]]:
+
+        returned_params: dict[str, int]= {}
+
+        arb_id = recv_msg.arbitration_id
+        for i, param in enumerate(self.received_parameters):
+            new_param_val = int.from_bytes(recv_msg.data[param.start_index:param.start_index + param.byte_length],byteorder=BYTE_ORDER, signed=False)
+            returned_params[param.name] = new_param_val  # Change this line
+
+        return arb_id, returned_params
 
 
 def int_to_byte_array(int_values, starting_indices, byte_lengths, transform_fns):

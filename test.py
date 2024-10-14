@@ -1,8 +1,18 @@
-from msgs import SpeedClosedLoopControlMsg, AbsolutePositionClosedLoopControlMsg
+from msgs import *
+import can
 
+speed = SpeedClosedLoopControlMsg()
+hi = speed.make_msg(0x142, 1000)
+print(hi.arbitration_id,hi.data)
 
-speed = AbsolutePositionClosedLoopControlMsg()
+# 0x010E -> 270 degrees
+# 0x0064 -> 100 degrees per second
+# 0x000A -> 10 amps
+# 0x32 -> 50 degrees C
+fake_recv_msg = can.Message(
+    arbitration_id=0x142,
+    data=b'\xA2\x32\x0A\x00\x64\x00\x0E\x01',
+    )
 
-hi = speed.make_msg(10, 10, 10)
-
-print(hi.arbitration_id, hi.data)
+id, params = speed.parse_msg(fake_recv_msg)
+print(id,params)
