@@ -9,7 +9,7 @@ setup(
         'pymodbus==2.5.2 '
     ],
     author="Nathan Adkins",
-    author_email="npa00003@mix.wvu.edu",
+    author_email="nathanpadkins@gmail.com",
     description="Defines classes for controlling myactuator RMD motor",
     license="MIT",
     keywords="actuator robotics",
