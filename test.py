@@ -1,8 +1,8 @@
-from msgs import SpeedClosedLoopControlMsg, MotorShutdownMsg, ReadMotorStatus2Msg, ReadMotorStatus3Msg
-import serial, time, can
+from msgs import SpeedClosedLoopControlMsg, MotorShutdownMsg, ReadMotorStatus1Msg,ReadMotorStatus2Msg, ReadMotorStatus3Msg
+import serial, time, can, csv
 
 speed_msg_mkr = SpeedClosedLoopControlMsg()
-speed_msg = speed_msg_mkr.make_uart_msg(0x141,600)
+speed_msg = speed_msg_mkr.make_uart_msg(0x141,150)
 stop_msg_mkr = MotorShutdownMsg()
 stop_msg = stop_msg_mkr.make_uart_msg(0x141)
 
@@ -17,7 +17,7 @@ port = serial.Serial(
 
 responses = []
 for n in range(200):
-    port.write(speed_msg)
+    port.write(status_msg)
     time.sleep(0.1)
     responses.append(bytearray(port.read(13)))
 
@@ -28,5 +28,12 @@ for response in responses:
         arbitration_id= 1 + 0x140,
         data = response[3:10],
     )
-    id, val = speed_msg_mkr.parse_can_msg(new_can_msg)
+    id, val = status_mkr.parse_can_msg(new_can_msg)
     print(id, val)
+
+filename = 'myactuator_lib/status_3_output.csv'
+
+# Write data to the CSV file
+with open(filename, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerows(responses)
