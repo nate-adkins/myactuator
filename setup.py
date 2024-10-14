@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="myactuator_lib",
+    name="myactuator",
     version="2.0.0",
     packages=find_packages(),
     install_requires=[
@@ -13,5 +13,5 @@ setup(
     description="Defines classes for controlling myactuator RMD motor",
     license="MIT",
     keywords="actuator robotics",
-    url="https://github.com/nate-adkins/myactuator_lib",   # project homepage
+    url="https://github.com/nate-adkins/myactuator",   # project homepage
 )

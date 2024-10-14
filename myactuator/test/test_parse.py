@@ -1,4 +1,4 @@
-from myactuator_lib.msgs import *
+from myactuator.msgs import *
 import can
 
 # testing out parse

@@ -1,4 +1,4 @@
-from myactuator_lib.msgs import SpeedClosedLoopControlMsg, MotorShutdownMsg, ReadMotorStatus1Msg,ReadMotorStatus2Msg, ReadMotorStatus3Msg
+from myactuator.msgs import SpeedClosedLoopControlMsg, MotorShutdownMsg, ReadMotorStatus1Msg,ReadMotorStatus2Msg, ReadMotorStatus3Msg
 import serial, time, can, csv
 
 speed_msg_mkr = SpeedClosedLoopControlMsg()

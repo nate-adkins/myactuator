@@ -1,4 +1,4 @@
-from myactuator_lib.helpers import _BaseMsg, _CanMsgParam
+from myactuator.helpers import _BaseMsg, _CanMsgParam
 
 
 class ReadPIDParamsMsg(_BaseMsg):
