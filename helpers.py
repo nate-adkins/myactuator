@@ -1,4 +1,5 @@
 import can
+from pymodbus.utilities import computeCRC
 
 BYTE_ORDER = 'little'
 
@@ -14,8 +15,13 @@ class _BaseMsg:
         self.cmd_byte = None
         self.sent_parameters: list[_CanMsgParam] = []
         self.received_parameters: list[_CanMsgParam] = []
+
+    def make_uart_msg(self,arb_id, *args)-> bytearray:
+        can_msg = self.make_can_msg(arb_id, *args)
+        crc = computeCRC(bytes([0x3e, can_msg.arbitration_id - 0x140, 0x08] + can_msg.data))          
+        return bytearray([0x3e, can_msg.arbitration_id - 0x140, 0x08] + can_msg.data + [crc>>8, crc&0xFF])
   
-    def make_msg(self, arb_id, *args) -> can.Message:
+    def make_can_msg(self, arb_id, *args) -> can.Message:
 
         if len(args) != len(self.sent_parameters):
             raise ValueError(f'{len(args)} arguments were given, requires {len(self.sent_parameters)} {[param.name for param in self.sent_parameters]}')
@@ -33,8 +39,15 @@ class _BaseMsg:
         new_data[0] = self.cmd_byte
         new_msg.data = new_data
         return new_msg
+    
+    def parse_uart_msg(self, bytes: bytes) -> tuple[int, dict[str, int]]:
+        new_can_msg = can.Message(
+            arbitration_id= 1 + 0x140,
+            data = bytes[3:10],
+        )
+        return self.parse_can_msg(new_can_msg)
 
-    def parse_msg(self, recv_msg: can.Message) -> tuple[int, dict[str, int]]:
+    def parse_can_msg(self, recv_msg: can.Message) -> tuple[int, dict[str, int]]:
 
         returned_params: dict[str, int]= {}
 
