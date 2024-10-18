@@ -52,7 +52,7 @@ class _BaseMsg:
     @classmethod
     def parse_uart_msg(cls, bytes: bytes) -> tuple[int, dict[str, int]]:
         new_can_msg = can.Message(
-            arbitration_id=1 + 0x140,
-            data=bytes[3:10],
+            arbitration_id= bytes[0] + 0x140,
+            data=bytearray(bytes)[3:10],
         )
         return cls.parse_can_msg(new_can_msg)

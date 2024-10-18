@@ -2,11 +2,6 @@ from myactuator import SpeedClosedLoopControlMsg, SystemResetMsg
 import matplotlib.pyplot as plt
 import time, can, math
 
-# from myactuator_lib import Motor
-# hi = Motor(0x141)
-# spd_msg = hi.Speed_Closed_loop_Control_Command(-100)
-# print(spd_msg)
-
 temps = []
 amps = []
 speeds = []
