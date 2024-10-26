@@ -267,7 +267,7 @@ class SystemOperatingModeAcquisitionMsg(_BaseMsg):
     _cmd_byte = 0x70
     _sent_parameters = []
     _received_parameters = [
-        _CanMsgParam('operating_mde', 7, 1, lambda x: x),
+        _CanMsgParam('operating_mode', 7, 1, lambda x: x),
     ]
 
 
