@@ -143,7 +143,7 @@ class ReadMotorStatus1Msg(_BaseMsg):
         _CanMsgParam('motor_temperature_c', 1, 1, lambda x: x),
         _CanMsgParam('mos_temperature', 2, 1, lambda x: x),
         _CanMsgParam('break_state', 3, 1, lambda x: x),
-        _CanMsgParam('voltage_volts', 4, 2, lambda x: x),
+        _CanMsgParam('voltage_volts', 4, 2, lambda x: x / 10),
         _CanMsgParam('error_status', 6, 2, lambda x: x),
     ]
 
