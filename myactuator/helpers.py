@@ -37,7 +37,7 @@ class _BaseMsg:
     def make_uart_msg(cls, arb_id, *args) -> bytearray:
         can_msg = cls.make_can_msg(arb_id, *args)
         crc = computeCRC(bytes([0x3e, can_msg.arbitration_id - 0x140, 0x08] + can_msg.data))
-        return bytearray([0x3e, can_msg.arbitration_id - 0x140, 0x08] + can_msg.data + [crc >> 8, crc & 0xFF]) # 0x00FF, 0xFF12 && 0xFF -> 0x12
+        return bytearray([0x3e, can_msg.arbitration_id - 0x140, 0x08] + can_msg.data + [crc >> 8, crc & 0xFF])
 
     @classmethod
     def parse_can_msg(cls, recv_msg: can.Message) -> tuple[int, dict[str, int]]:
@@ -45,7 +45,7 @@ class _BaseMsg:
         arb_id = recv_msg.arbitration_id
         for param in cls._received_parameters:
             new_param_val = int.from_bytes(recv_msg.data[param.start_index:param.start_index + param.byte_length], byteorder=BYTE_ORDER, signed=True)
-            returned_params[param.name] = new_param_val  # Change this line
+            returned_params[param.name] = float(param.transform_func(new_param_val))
 
         return arb_id, returned_params
 
