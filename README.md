@@ -30,7 +30,7 @@ id = 0x141 # can arbitration id of intended motor
 
 speed_uart_msg = SpeedClosedLoopControlMsg.make_uart_msg(can_arbitration_id,speed_dps)
 
-# send can message...
+# send uart message...
 ```
 
 ### Parsing a can message
