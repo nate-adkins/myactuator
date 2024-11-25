@@ -1,4 +1,4 @@
-from myactuator.helpers import _BaseMsg, _CanMsgParam
+from pyactuator.helpers import _BaseMsg, _CanMsgParam
 
 
 class ReadPIDParamsMsg(_BaseMsg):
@@ -127,15 +127,15 @@ class ReadSingleTurnAngleMsg(_BaseMsg):
 class ReadMotorStatus1Msg(_BaseMsg):
     # can have multiples
     error_statuses = {
-        0x0002: 'Motor stall',
+        0x0002: 'motor stall',
         0x0004: 'low pressure',
         0x0008: 'overvoltage',
         0x0010: 'overcurrent',
-        0x0040: 'Power overrun',
-        0x0080: 'Calibration parameter writing error',
+        0x0040: 'power overrun',
+        0x0080: 'calibration parameter writing error',
         0x0100: 'speeding',
-        0x1000: 'Motor temperature over temperature',
-        0x2000: 'Encoder calibration error',
+        0x1000: 'motor temperature over temperature',
+        0x2000: 'cncoder calibration error',
     }
     _cmd_byte = 0x9A
     _sent_parameters = []
@@ -198,7 +198,6 @@ class TorqueClosedLoopControlMsg(_BaseMsg):
 
 
 class SpeedClosedLoopControlMsg(_BaseMsg):
-    # max of 65535
     _cmd_byte = 0xA2
     _sent_parameters = [
         _CanMsgParam('speed_dps', 4, 4, lambda x: x*100),
@@ -226,10 +225,6 @@ class AbsolutePositionClosedLoopControlMsg(_BaseMsg):
 
 
 class SingleTurnPositionControlMsg(_BaseMsg):
-    rotation_directions = {
-        'cw': 0x00,
-        'ccw': 0x01,
-    }
     _cmd_byte = 0xA6
     _sent_parameters = [
         _CanMsgParam('rotation_direction', 1, 1, lambda x: x),
@@ -260,14 +255,14 @@ class IncrementalPositionClosedLoopControlMsg(_BaseMsg):
 
 class SystemOperatingModeAcquisitionMsg(_BaseMsg):
     operating_modes = {
-        'current_loop_control': 0x01,
-        'speed_loop_control': 0x02,
-        'position_loop_control': 0x03,
+        0x01 : 'current_loop_control',
+        0x02 : 'speed_loop_control',
+        0x03 : 'position_loop_control',
     }
     _cmd_byte = 0x70
     _sent_parameters = []
     _received_parameters = [
-        _CanMsgParam('operating_mode', 7, 1, lambda x: x),
+        _CanMsgParam('operating_mode', 7, 1, lambda x: SystemOperatingModeAcquisitionMsg.operating_modes.get(x)),
     ]
 
 
@@ -280,7 +275,7 @@ class MotorPowerAcquisitionMsg(_BaseMsg):
 
 
 class SystemResetMsg(_BaseMsg):
-    # reset the system program ??
+    # Disables torque and resets the control electronics
     _cmd_byte = 0x76
     _sent_parameters = []
     _received_parameters = []
@@ -348,24 +343,6 @@ class MotorModelReadingMsg(_BaseMsg):
     _cmd_byte = 0x90
     _sent_parameters = []
     _received_parameters = []
-# class ActiveReplyFunctionMsg(_BaseMsg):
-#
-#
-#         _cmd_byte = 0x91
-#         _sent_parameters = []
-#         _received_parameters = []
-# class FunctionControlMsg(_BaseMsg):
-#
-#
-#         _cmd_byte = 0x92
-#         _sent_parameters = []
-#         _received_parameters = []
-# class MultiMotorCommandMsg(_BaseMsg):
-#
-#
-#         _cmd_byte = 0x93
-#         _sent_parameters = []
-#         _received_parameters = []
 
 
 class CANIDSettingMsg(_BaseMsg):
@@ -383,21 +360,3 @@ class CANIDSettingMsg(_BaseMsg):
         _CanMsgParam('read_write_flag', 2, 1, lambda x: x),
         _CanMsgParam('can_id', 6, 2, lambda x: x),
     ]
-# class MotionModeControlMsg(_BaseMsg):
-#
-#
-#         _cmd_byte = 0x95
-#         _sent_parameters = []
-#         _received_parameters = []
-# class RS485MultiMotorCommandMsg(_BaseMsg):
-#
-#
-#         _cmd_byte = 0x96
-#         _sent_parameters = []
-#         _received_parameters = []
-# class RS485IDSettingMsg(_BaseMsg):
-#
-#
-#         _cmd_byte = 0x97
-#         _sent_parameters = ['rs485_id']
-#         _received_parameters = []
